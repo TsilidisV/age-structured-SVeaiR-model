@@ -140,12 +140,12 @@ function figure_R0_leq1()
     fig = Figure( resolution = size_pt
              )
 
-    axS = Axis(fig[1,1], title = L"\textrm{\textbf{Susceptible}} \; (S)"            , xticks = xtickshort, titlesize = 12, xlabel = "Days", ytickformat = y -> powerOfTen.(y))
-    axV = Axis(fig[1,2], title = L"\textrm{\textbf{Vaccinated}} \; (V)"             , xticks = xtickshort, titlesize = 12, xlabel = "Days", ytickformat = y -> powerOfTen.(y))
-    axE = Axis(fig[2,1], title = L"\textrm{\textbf{Exposed}} \; (E)"                , xticks = xtickshort, titlesize = 12, xlabel = "Days", ytickformat = y -> powerOfTen.(y))
-    axA = Axis(fig[2,2], title = L"\textrm{\textbf{Asymptomatic infectious}} \; (A)", xticks = xtickshort, titlesize = 12, xlabel = "Days", ytickformat = y -> powerOfTen.(y))
-    axI = Axis(fig[3,1], title = L"\textrm{\textbf{Symptomatic infectious}} \; (I)" , xticks = xtickshort, titlesize = 12, xlabel = "Days", ytickformat = y -> powerOfTen.(y))
-    axR = Axis(fig[3,2], title = L"\textrm{\textbf{Removed}} \; (R)"                , xticks = xtickshort, titlesize = 12, xlabel = "Days", ytickformat = y -> powerOfTen.(y))
+    axS = Axis(fig[1,1], title = L"\textrm{\textbf{Susceptible}} \; (S)"            , xticks = xtickshort, titlesize = 12, xlabel = L"\text{Days}", ytickformat = y -> powerOfTen.(y))
+    axV = Axis(fig[1,2], title = L"\textrm{\textbf{Vaccinated}} \; (V)"             , xticks = xtickshort, titlesize = 12, xlabel = L"\text{Days}", ytickformat = y -> powerOfTen.(y))
+    axE = Axis(fig[2,1], title = L"\textrm{\textbf{Exposed}} \; (E)"                , xticks = xtickshort, titlesize = 12, xlabel = L"\text{Days}", ytickformat = y -> powerOfTen.(y))
+    axA = Axis(fig[2,2], title = L"\textrm{\textbf{Asymptomatic infectious}} \; (A)", xticks = xtickshort, titlesize = 12, xlabel = L"\text{Days}", ytickformat = y -> powerOfTen.(y))
+    axI = Axis(fig[3,1], title = L"\textrm{\textbf{Symptomatic infectious}} \; (I)" , xticks = xtickshort, titlesize = 12, xlabel = L"\text{Days}", ytickformat = y -> powerOfTen.(y))
+    axR = Axis(fig[3,2], title = L"\textrm{\textbf{Removed}} \; (R)"                , xticks = xtickshort, titlesize = 12, xlabel = L"\text{Days}", ytickformat = y -> powerOfTen.(y))
 
     axSs = add_axis_inset(fig[1,1]; halign=:right, valign=:top, alignmode=Mixed(right=8, top = 25))
     axSs.ytickformat = y -> powerOfTen.(y)
