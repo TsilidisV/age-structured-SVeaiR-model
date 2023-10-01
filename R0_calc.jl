@@ -35,6 +35,8 @@ Base.@kwdef struct SVeaiR_ICs
     i::Float64 = E/(ω*90)
 end
 
+
+##### Data loader #####
 ω=360
 function χF(θ)
     if θ/ω < 30
@@ -62,14 +64,11 @@ dfContacts = DataFrame(CSV.File("data/dataContacts.csv"))
 contactsY = Spline1D(dfContacts.Age, dfContacts.Percentage)
 contacts(θ) = contactsY(θ/ω)
 
-P1 = SVeaiR_Param(N0 = 80*10^6, μ = (16*10^(-3))/365, prA= 2/10, prI = 2/5, c = θ -> contacts(θ),
-                    p = ((54 - 45)/100)/90, ε = 70/100, ζ = 1/(2 * 7), k = θ -> kF(θ), q = θ -> qF(θ), ξ = θ -> 0.5, 
-                    χ = θ -> χF(θ), γA = θ -> 1/8, γI = θ -> 1/14 )
 
-
-
+##### R_0 calculator #####
 intgr(f, a, b) = solve(IntegralProblem((x, p) -> f(x), a, b), QuadGKJL(); reltol = 1e-10, abstol = 1e-10).u
 
+# function that takes as an argument a set of parameters and spits out the R_0
 function R0(P::SVeaiR_Param)
     ΕΝΔ = 90.0 * 360.0
 
@@ -88,42 +87,3 @@ function R0(P::SVeaiR_Param)
     return ( (P.μ * P.N0) / (P.p + P.μ) ) * (1 + P.p * (1-P.ε) / (P.ε * P.ζ + P.μ)  ) * (RA + RI)
 end
 
-
-
-###############################################################################################
-
-Pprc(i) = SVeaiR_Param(N0 = 80*10^6, μ = (16*10^(-3))/365, prA= 2/10, prI = 2/5, c = θ -> i*contacts(θ),
-                    p = ((54 - 45)/100)/90, ε = 70/100, ζ = 1/(2 * 7), k = θ -> k(θ), q = θ -> q(θ), ξ = θ -> 0.5, 
-                    χ = θ -> χ(θ), γA = θ -> 1/8, γI = θ -> 1/14 )
-
-Pfun = SVeaiR_Param(N0 = 80*10^6, μ = (16*10^(-3))/365, prA= 2/10, prI = 2/5, c = θ -> i*contacts(θ),
-                    p = ((54 - 45)/100)/90, ε = 70/100, ζ = 1/(2 * 7), k = θ -> k(θ), q = θ -> q(θ), ξ = θ -> 0.5, 
-                    χ = θ -> χ(θ), γA = θ -> 1/8, γI = θ -> 1/14 )      
-
-
-#yolo
-gC(x) = (16.71291/0.37)*exp(-((x-(365.0*10)) / 10000 )^2)
-
-tsr = 0.0:0.1:90.0 * 365.0
-sum( contacts(tsr) ) / length(tsr)
-sum( (16.71291/0.37)*exp.(.-((tsr.-(365.0*10.0)) / 10000 ).^2) )  / length(tsr)
-
-using GLMakie
-lines(tsr, gC.(tsr) )
-
-Ptest = SVeaiR_Param(N0 = 80*10^8, μ = (16*10^(-3))/365, prA= 2/10, prI = 2/5, c = θ -> gC(θ),
-                    p = ((54 - 45)/100)/90, ε = 70/100, ζ = 1/(2 * 7), k = θ -> kF(θ), q = θ -> qF(θ), ξ = θ -> 0.5, 
-                    χ = θ -> χF(θ), γA = θ -> 1/8, γI = θ -> 1/14 )
-
-@time R0(Ptest)
-
-gC2(x) = (16.71291/0.37)*exp(-((x-(365.0*70)) / 10000 )^2)
-Ptest2 = SVeaiR_Param(N0 = 10*10^2, μ = (16*10^(-3))/365, prA= 2/10, prI = 2/5, c = θ -> gC2(θ),
-                    p = ((54 - 45)/100)/90, ε = 70/100, ζ = 1/(2 * 7), k = θ -> kF(θ), q = θ -> qF(θ), ξ = θ -> 0.5, 
-                    χ = θ -> χF(θ), γA = θ -> 1/8, γI = θ -> 1/14 )
-@time R0(Ptest2)
-
-Ptest0 = SVeaiR_Param(N0 = 80*10^6, μ = (16*10^(-3))/365, prA= 2/10, prI = 2/5, c = θ -> gC2(θ),
-                    p = ((54 - 45)/100)/90, ε = 70/100, ζ = 1/(2 * 7), k = θ -> kF(θ), q = θ -> qF(θ), ξ = θ -> 0.5, 
-                    χ = θ -> χF(θ), γA = θ -> 1/8, γI = θ -> 1/14 )
-@time R0(Ptest0)
